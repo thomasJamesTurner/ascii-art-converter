@@ -1,7 +1,9 @@
-using ascii_art_converter;
-
-var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService<Worker>();
-
-var host = builder.Build();
-host.Run();
+namespace ascii_art_converter
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+        }
+    }
+}

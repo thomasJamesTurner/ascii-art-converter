@@ -1,14 +1,23 @@
-
+using System.Drawing;
 namespace ascii_art_converter
 {
     public class ImageLoader
     {
-        
+        Bitmap Current_Image;
 
-        ImageLoader() 
+        public Bitmap load(string path)
         {
-            Console_Width = Console.WindowWidth; 
-            Console_Height = Console.WindowHeight;
+            Bitmap bmp = null;
+            try
+            {
+                bmp = new Bitmap(Image.FromFile(path));
+                Console.WriteLine("loaded image");
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return bmp;
         }
     }
 }

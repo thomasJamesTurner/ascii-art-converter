@@ -1,7 +1,7 @@
 using System.Drawing;
 namespace ascii_art_converter
 {
-    public class ImageLoader
+    class ImageLoader
     {
         Bitmap Current_Image;
 
@@ -15,6 +15,7 @@ namespace ascii_art_converter
             }
             catch (Exception ex) 
             {
+                Console.WriteLine("could not load image");
                 Console.WriteLine(ex.Message);
             }
             return bmp;

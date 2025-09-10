@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO.Pipelines;
 
 namespace ascii_art_converter
 {
@@ -26,19 +27,19 @@ namespace ascii_art_converter
             //int height = (int)(image.Height / aspectRatio);
             ImageProcessor processor = new ImageProcessor();
             Bitmap image_resized = processor.resize(image, width, height);
-            Bitmap image_greyscale = processor.greyscale(image_resized);
-            image_greyscale = processor.invert(image_greyscale);
-            image_greyscale.Save("temp.png", format: ImageFormat.Png);
+            //Bitmap image_greyscale = processor.greyscale(image_resized);
+            //image_greyscale = processor.invert(image_greyscale);
+            //image_greyscale.Save("temp.png", format: ImageFormat.Png);
             string asciiChars = "@#$S]%?!:+~-*'.  ";
             string output = "";
             
-            for (int y = 0; y < image_greyscale.Height; y++)
+            for (int y = 0; y < image_resized.Height; y++)
             {
-                for (int x = 0; x < image_greyscale.Width; x++)
+                for (int x = 0; x < image_resized.Width; x++)
                 {
-                    Color color = image_greyscale.GetPixel(x, y);
+                    Color color = image_resized.GetPixel(x, y);
                     int index = (int)((color.R / 255.0f) * (asciiChars.Length - 1));
-                    output += asciiChars[index];
+                    output += $"\u001b[38;2;{color.R};{color.G};{color.B}m{asciiChars[index]}";
 
                 }
                 output += "\n";

@@ -30,5 +30,27 @@ namespace ascii_art_converter
             }
             return image_greyscale;
         }
+        public Bitmap invert(Bitmap source)
+        {
+            Bitmap inverted = new Bitmap(source.Width, source.Height);
+
+            for (int y = 0; y < source.Height; y++)
+            {
+                for (int x = 0; x < source.Width; x++)
+                {
+                    Color pixel = source.GetPixel(x, y);
+
+                    Color invertedColor = Color.FromArgb(
+                        pixel.A,
+                        255 - pixel.R,
+                        255 - pixel.G,
+                        255 - pixel.B
+                    );
+                    inverted.SetPixel(x, y, invertedColor);
+                }
+            }
+
+            return inverted;
+        }
     }
 }

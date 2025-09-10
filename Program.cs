@@ -20,13 +20,30 @@ namespace ascii_art_converter
             Bitmap image = imageLoader.load(path);
             
             int width = Console.WindowWidth;
-            int height = (int)(Console.WindowHeight / aspectRatio);
+            int height = Console.WindowHeight - 1;
+            //int height = (int)(Console.WindowHeight / aspectRatio);
             //int width = image.Width;
             //int height = (int)(image.Height / aspectRatio);
             ImageProcessor processor = new ImageProcessor();
             Bitmap image_resized = processor.resize(image, width, height);
             Bitmap image_greyscale = processor.greyscale(image_resized);
+            image_greyscale = processor.invert(image_greyscale);
             image_greyscale.Save("temp.png", format: ImageFormat.Png);
+            string asciiChars = "@#$S]%?!:+~-*'.  ";
+            string output = "";
+            
+            for (int y = 0; y < image_greyscale.Height; y++)
+            {
+                for (int x = 0; x < image_greyscale.Width; x++)
+                {
+                    Color color = image_greyscale.GetPixel(x, y);
+                    int index = (int)((color.R / 255.0f) * (asciiChars.Length - 1));
+                    output += asciiChars[index];
+
+                }
+                output += "\n";
+            }
+            Console.WriteLine(output);
 
 
         }

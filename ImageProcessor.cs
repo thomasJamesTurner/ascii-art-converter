@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace ascii_art_converter
@@ -24,33 +26,50 @@ namespace ascii_art_converter
                 for (int y = 0; y < source.Height; y++)
                 {
                     Color color = source.GetPixel(x, y);
-                    Color new_color = Color.FromArgb(color.R, color.R, color.R);
+                    int brightness = (int)((color.R + color.B + color.G) / 3);
+                    Color new_color = Color.FromArgb(brightness, brightness, brightness);
                     image_greyscale.SetPixel(x, y, new_color);
                 }
             }
             return image_greyscale;
         }
-        public Bitmap invert(Bitmap source)
+        public string asciify(Bitmap source,string charset, bool colour)
         {
-            Bitmap inverted = new Bitmap(source.Width, source.Height);
-
-            for (int y = 0; y < source.Height; y++)
+            string output = "";
+            var sb = new StringBuilder();
+            if (colour)
             {
-                for (int x = 0; x < source.Width; x++)
+
+                for (int y = 0; y < source.Height; y++)
                 {
-                    Color pixel = source.GetPixel(x, y);
+                    for (int x = 0; x < source.Width; x++)
+                    {
+                        Color color = source.GetPixel(x, y);
+                        int index = (int)((color.R / 255.0f) * (charset.Length - 1));
+                        sb.Append( $"\u001b[38;2;{color.R};{color.G};{color.B}m{charset[index]}");
 
-                    Color invertedColor = Color.FromArgb(
-                        pixel.A,
-                        255 - pixel.R,
-                        255 - pixel.G,
-                        255 - pixel.B
-                    );
-                    inverted.SetPixel(x, y, invertedColor);
+                    }
+                    sb.AppendLine();
                 }
+                sb.Append("\u001b[38;2;255;255;255m");
+                return sb.ToString();
             }
+            else 
+            {
+                for (int y = 0; y < source.Height; y++)
+                {
+                    for (int x = 0; x < source.Width; x++)
+                    {
+                        Color color = source.GetPixel(x, y);
+                        int index = (int)((color.R / 255.0f) * (charset.Length - 1));
+                        sb.Append(charset[index]);
 
-            return inverted;
+                    }
+                    sb.AppendLine();
+                }
+                return sb.ToString();
+            }
+            
         }
     }
 }

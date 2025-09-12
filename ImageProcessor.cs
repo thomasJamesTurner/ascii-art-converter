@@ -68,8 +68,7 @@ namespace ascii_art_converter
                     sb.AppendLine();
                 }
                 return sb.ToString();
-            }
-            
+            }   
         }
     }
 }

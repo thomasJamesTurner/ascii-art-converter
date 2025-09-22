@@ -1,14 +1,40 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO.Pipelines;
+using System.Runtime.InteropServices;
 
 namespace ascii_art_converter
 {
     public class Program
     {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr GetStdHandle(int nStdHandle);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out int lpMode);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool SetConsoleMode(IntPtr hConsoleHandle, int dwMode);
+
+        private const int STD_OUTPUT_HANDLE = -11;
+        private const int ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
+
+        public static void EnableVirtualTerminal()
+        {
+            var handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+            if (!GetConsoleMode(handle, out int mode))
+            {
+                return;
+            }
+
+            SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+        }
         public static void Main(string[] args)
         {
+            EnableVirtualTerminal();
+            
             string charSet = """ !"£$%^&*()_+-={}[]:@;'~#<>?,./\|`¬¦ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890""";
             var sorted = ConsoleFontHelper.SortByPixelCount(charSet);
 

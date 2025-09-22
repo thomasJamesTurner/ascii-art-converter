@@ -90,7 +90,7 @@ class ConsoleFontHelper
 
         return count;
     }
-    public static List<(char character, int pixelCount)> RemoveNearDuplicates(List<(char character, int pixelCount)> sortedList, int minDifference = 4)
+    public static List<(char character, int pixelCount)> RemoveNearDuplicates(List<(char character, int pixelCount)> sortedList, int minDifference = 0)
     {
         if (sortedList.Count == 0)
             return new List<(char, int)>();
